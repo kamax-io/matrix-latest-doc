@@ -1,0 +1,73 @@
+# Copyright (C) 2018 Kamax Sàrl
+# https://www.kamax.io/
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+
+swagger: '2.0'
+info:
+  title: "Matrix Identity Service Session API"
+  version: "1.0.0"
+host: localhost:8090
+schemes:
+  - https
+basePath: /_matrix/identity/api/v1
+produces:
+  - application/json
+paths:
+  "/3pid/bind":
+    post:
+      summary: Bind a user's Matrix ID to a 3PID.
+      description: |
+        After a 3PID session has been successfully validated, a Matrix User ID can
+        be bound to a 3PID by calling this API and providing the session credentials.
+
+        If the session is still valid, this will publish the association between the
+        3PIDs validated on that session and the passed Matrix user ID. Future calls
+        to ``/lookup`` for any of the session's 3PIDs will return this association.
+      operationId: threepidBind
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: form
+          name: sid
+          type: string
+          required: true
+          description: The session ID returned by the ``requestToken`` endpoint.
+        - in: form
+          name: client_secret
+          required: true
+          type: string
+          description: The client secret provided to the ``requestToken`` endpoint.
+        - in: form
+          name: mxid
+          required: true
+          type: string
+          description: The user's Matrix ID to bind to the 3PID address.
+      responses:
+        200:
+          description: The bind was successfully performed.
+          examples:
+            application/json: {}
+          schema:
+            type: object
+        401:
+          description: The session has not yet been validated.
+          examples:
+            application/json: {
+              "errcode": "M_SESSION_NOT_VALIDATED",
+              "error": "This validation session has not yet been completed"
+            }
+        403:
+          description: The session credentials provided are not valid.

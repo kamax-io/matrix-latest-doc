@@ -1,0 +1,77 @@
+# Copyright (C) 2018 Kamax Sàrl
+# https://www.kamax.io/
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+swagger: '2.0'
+info:
+  title: "Matrix Identity Service Session API"
+  version: "1.0.0"
+host: localhost:8090
+schemes:
+  - https
+basePath: /_matrix/identity/api/v1
+produces:
+  - application/json
+paths:
+  "/validate/{medium}/submitToken":
+    post:
+      summary: Validates ownership of the 3PID address associated with a session.
+      description: |
+        Validates the 3PID session with the provided token.
+
+        This endpoint takes form-data as input and may also be called using
+        the ``GET`` method and the form parameters given as query parameters.
+      operationId: sessionSubmitToken
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: path
+          type: string
+          name: medium
+          required: true
+          description: The 3PID medium type of the session.
+          x-example: "email"
+        - in: form
+          name: sid
+          type: string
+          required: true
+          description: The session ID returned by the ``requestToken`` endpoint.
+        - in: form
+          name: client_secret
+          required: true
+          type: string
+          description: The client secret provided to the ``requestToken`` endpoint.
+        - in: form
+          name: token
+          required: true
+          type: string
+          description: The token provided to the user after calling the ``requestToken`` endpoint.
+      responses:
+        200:
+          description: The session was successfully validated.
+          examples:
+            application/json: {
+                "success": true
+            }
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: The success status of the session validation
+            required:
+              - "success"
+        403:
+          description: The session credentials or the token provided are not valid.
