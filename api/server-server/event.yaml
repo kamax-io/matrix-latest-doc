@@ -1,0 +1,66 @@
+# Copyright (C) 2018 Kamax Sàrl
+# https://www.kamax.io/
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+swagger: '2.0'
+info:
+  title: "Matrix Federation Event Fetch API"
+  version: "1.0.0"
+host: localhost:8448
+schemes:
+  - https
+basePath: /_matrix/federation/v1
+produces:
+  - application/json
+paths:
+  "/event/{eventId}/":
+    get:
+      summary: Fetch an event.
+      description: Fetch an event from a remote homeserver.
+      operationId: getEvent
+      parameters:
+        - in: path
+          name: eventId
+          type: string
+          description: The ID to look for.
+          required: true
+          example: "!eventId:example.org"
+      responses:
+        200:
+          description: The request was processed successfully.
+          examples:
+            application/json: {
+              "origin": "example.org",
+              "pdus": [
+                ...
+              ]
+            }
+          schema:
+            type: object
+            properties:
+              origin:
+                type: string
+                required: true
+              origin_server_ts:
+                type: integer
+                # required: true -> To be validated
+              pdus:
+                type: array
+                required: true
+                items:
+                  type: PDU
+            required:
+              - "origin"
+              - "pdus"
