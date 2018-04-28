@@ -20,6 +20,10 @@
 .. have should hopefully not get complex enough that we need to worry about
 .. versioning it.
 
+.. WARNING::
+  This is not the official Matrix spec. This is a documentation of the current
+  behaviour of implementations in spec format.
+
 Introduction
 ------------
 .. WARNING::
