@@ -979,6 +979,8 @@ that data is not received in order or delayed in transit.
 Matrix provides several proactive flows so homeservers can try to complete their
 DAG if they become aware that parts of it are missing.
 
+{{event_ss_http_api}}
+
 {{room_get_missing_events_ss_http_api}}
 
 {{room_get_state_ss_http_api}}
